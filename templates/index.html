@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bank Loan Prediction</title>
+  <style>
+    body { font-family: Arial; background: #f4f6f8; text-align: center; margin-top: 50px; }
+    h1 { color: #222; }
+    input { margin: 8px; padding: 8px; width: 250px; border-radius: 6px; border: 1px solid #ccc; }
+    button { padding: 10px 20px; background-color: #0078D7; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    button:hover { background-color: #005fa3; }
+    .result { margin-top: 20px; font-size: 18px; color: green; }
+  </style>
+</head>
+<body>
+  <h1>🏦 Bank Loan Prediction</h1>
+  <form action="/predict" method="post">
+    <input type="text" name="Pclass" placeholder="Pclass" required><br>
+    <input type="text" name="Age" placeholder="Age" required><br>
+    <input type="text" name="SibSp" placeholder="SibSp" required><br>
+    <input type="text" name="Parch" placeholder="Parch" required><br>
+    <input type="text" name="Fare" placeholder="Fare" required><br>
+    <button type="submit">Predict</button>
+  </form>
+
+  {% if prediction_text %}
+  <div class="result">
+    <h3>{{ prediction_text }}</h3>
+  </div>
+  {% endif %}
+</body>
+</html>
