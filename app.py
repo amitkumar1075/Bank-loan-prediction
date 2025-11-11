@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request
-import pickle
+import joblib
 import numpy as np
 
 app = Flask(__name__)
 
-# ✅ Load the trained model
-model = pickle.load(open('model/random_forest_model.pkl', 'rb'))
+# Load trained model
+model = joblib.load(r'model\random_forest_model.joblib')  # ensure your model file exists
 
 @app.route('/')
 def home():
@@ -14,17 +14,34 @@ def home():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Get form inputs
-        data = [float(x) for x in request.form.values()]
-        final_input = np.array(data).reshape(1, -1)
+        # Collect all 16 features from form
+        features = [
+            float(request.form['age']),
+            float(request.form['job']),
+            float(request.form['marital']),
+            float(request.form['education']),
+            float(request.form['fault']),
+            float(request.form['balance']),
+            float(request.form['housing']),
+            float(request.form['loan']),
+            float(request.form['contact']),
+            float(request.form['day']),
+            float(request.form['month']),
+            float(request.form['duration']),
+            float(request.form['campaign']),
+            float(request.form['pdays']),
+            float(request.form['previous']),
+            float(request.form['poutcome'])
+        ]
 
-        prediction = model.predict(final_input)[0]
-        result_text = "✅ Loan Approved (Prediction = 1)" if prediction == 1 else "❌ Loan Rejected (Prediction = 0)"
+        final_features = np.array(features).reshape(1, -1)
+        prediction = model.predict(final_features)[0]
 
-        return render_template('index.html', prediction_text=result_text)
+        result = "✅ Customer will subscribe!" if prediction == 1 else "❌ Customer will not subscribe."
+        return render_template('index.html', result_text=result)
 
     except Exception as e:
-        return render_template('index.html', prediction_text=f"Error: {str(e)}")
+        return render_template('index.html', result_text=f"⚠️ Error: {str(e)}")
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
