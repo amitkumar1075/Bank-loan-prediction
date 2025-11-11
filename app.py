@@ -5,7 +5,11 @@ import numpy as np
 app = Flask(__name__)
 
 # Load trained model
-model = joblib.load(r'model\random_forest_model.joblib')  # ensure your model file exists
+import os
+
+model_path = os.path.join(os.path.dirname(__file__),"model", r"random_forest_model.joblib")
+model = joblib.load(model_path)
+
 
 @app.route('/')
 def home():
