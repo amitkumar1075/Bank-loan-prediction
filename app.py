@@ -1,15 +1,14 @@
 from flask import Flask, render_template, request
 import joblib
 import numpy as np
+import os
 
+# Initialize Flask app
 app = Flask(__name__)
 
 # Load trained model
-import os
-
-model_path = os.path.join(os.path.dirname(__file__),"model", r"random_forest_model.joblib")
+model_path = os.path.join(os.path.dirname(__file__), "model", "random_forest_model.joblib")
 model = joblib.load(model_path)
-
 
 @app.route('/')
 def home():
@@ -38,9 +37,11 @@ def predict():
             float(request.form['poutcome'])
         ]
 
+        # Convert to numpy array and predict
         final_features = np.array(features).reshape(1, -1)
         prediction = model.predict(final_features)[0]
 
+        # Output result
         result = "✅ Customer will subscribe!" if prediction == 1 else "❌ Customer will not subscribe."
         return render_template('index.html', result_text=result)
 
@@ -48,4 +49,5 @@ def predict():
         return render_template('index.html', result_text=f"⚠️ Error: {str(e)}")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Render assigns a PORT env variable
+    app.run(host="0.0.0.0", port=port, debug=True)
